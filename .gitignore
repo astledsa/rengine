@@ -1,0 +1,53 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+.env.*
+.python-version
+.conda/
+
+# Packaging artifacts
+build/
+dist/
+.eggs/
+*.egg-info/
+wheelhouse/
+
+# Test and type checking
+.pytest_cache/
+.coverage*
+htmlcov/
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+.nox/
+.tox/
+.ruff_cache/
+
+# Tooling metadata
+uv.lock.bak
+.uv/
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Application storage (runtime data)
+storage/data/
+storage/index/
+storage/kv/
+
+main.py

@@ -1,0 +1,17 @@
+[project]
+name = "navy"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "numpy>=2.3.3",
+    "openai>=2.6.1",
+    "opencv-python>=4.11.0.86",
+    "pillow>=11.3.0",
+    "pydantic>=2.12.3",
+    "pymupdf>=1.26.5",
+    "pytesseract>=0.3.13",
+    "xapian-bindings>=0.1.0",
+]
