@@ -1,16 +1,18 @@
 import io
 import os
 import fitz
+import tantivy
 import pytesseract
 import numpy as np
-from Classes.kvstore import KV
-from models import *
+from utils.models import *
 from PIL import Image
 from openai import OpenAI
-from typing import List, Optional, Tuple
 from corenn_py import CoreNN
+from Classes.kvstore import KV
 from pytesseract import Output
 from dotenv import load_dotenv
+from typing import List, Optional, Tuple
+from utils.query_processor import *
 
 try:
     import cv2
@@ -18,6 +20,16 @@ except Exception:
     cv2 = None
 
 load_dotenv()
+
+def is_valid_paragraph(text: str, min_words: int = 40, min_chars: int = 200) -> bool:
+    if not text:
+        return False
+    clean = text.strip()
+    if len(clean) < min_chars:
+        return False
+    if len(clean.split()) < min_words:
+        return False
+    return True
 
 class RetrievalEngine:
     
@@ -27,6 +39,17 @@ class RetrievalEngine:
         pdfargs: Optional[PDFExtractArgs] = None, 
         vargs: Optional[VectorIndexArgs] = None,
     ):
+        self.kv = KV ()
+        self.openai = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+        
+        if initargs.text_search_index_init:
+            schema_builder = tantivy.SchemaBuilder()
+            schema_builder.add_text_field("content", stored=True, tokenizer_name="en_stem")
+            schema = schema_builder.build()
+            self.tanv = tantivy.Index(schema, path="./storage/index/text")
+        else:
+            self.tanv = tantivy.Index.open(path="./storage/index/text")
+            
         if initargs.ingest_pdf and pdfargs:
             self.pdf_path: str = pdfargs.pdf_path or "./storage/data/sample.pdf"
             self.scanned: bool = pdfargs.scanned or False
@@ -43,9 +66,6 @@ class RetrievalEngine:
             )
         elif vargs:
             self.corenn = CoreNN.open(vargs.path_to_index)
-        
-        self.kv = KV ()
-        self.openai = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
         
         if initargs.kv_store_init:
             self.kv.create_table()
@@ -109,6 +129,7 @@ class RetrievalEngine:
     def ingest(self, embed: bool = False, eargs: Optional[EmbeddingArgs] = None) -> None:
         
         keys, texts = [], []
+        writer = self.tanv.writer()
 
         with fitz.open(self.pdf_path) as doc:
             for i in range(doc.page_count):
@@ -123,11 +144,19 @@ class RetrievalEngine:
                     # images = self._extract_embedded_images(doc, page)
                 
                 page_key = f"{self.pdf_path.strip('.')}_page_{i+1:04d}"
-                self.kv.set(page_key, text.strip())
+                
+                if is_valid_paragraph(text):
+                    writer.add_document(tantivy.Document(content=text.strip()))
+                
+                # self.kv.set(page_key, text.strip())
+                
                 if embed:
                     keys.append(page_key)
                     texts.append(text.strip())
-
+        
+        writer.commit()
+        writer.wait_merging_threads()
+        
         if embed and texts:
             response = self.openai.embeddings.create(
                 model=eargs.embed_model or "text-embedding-3-small",
@@ -140,7 +169,21 @@ class RetrievalEngine:
         
         print(f"Indexed and stored {len(texts)} arrays")
     
-    def retrieve (self, query: str, eargs: Optional[EmbeddingArgs] = None) -> List[Tuple[str, float]]:
+    def FullTextRetrieve (self, query: str) -> List[Tuple[str, float]]:
+        
+        searcher = self.tanv.searcher()
+        
+        query = build_query(self.tanv, structure_query(query))
+        best_hits = searcher.search(query, 25).hits
+        
+        results: List[Tuple[str, float]] = []
+        for (score, best_doc_address) in best_hits:
+            best_doc = searcher.doc(best_doc_address)
+            results.append((best_doc["content"], score))
+        
+        return results
+    
+    def SemanticRetrieve (self, query: str, eargs: Optional[EmbeddingArgs] = None) -> List[Tuple[str, float]]:
         
         res = self.openai.embeddings.create(
                 model=eargs.embed_model if eargs else "text-embedding-3-small",
@@ -159,12 +202,23 @@ class RetrievalEngine:
     
     def chat (self, query: str) -> str:
         
-        context: str = " ".join([t[0] for t in self.retrieve(query)])
+        results_keyword: Set[str] = set([t[0] for t in self.FullTextRetrieve(query)])
+        results_semantic: Set[str] = set([t[0] for t in self.SemanticRetrieve(query)])
+        
+        common = results_keyword & results_semantic
+        keyword_match = results_keyword - results_semantic
+        semantic_match = results_semantic = results_keyword
+        
+        context: str = f"""
+            common: {common}\n
+            semantic match: {semantic_match}\n
+            keyword match: {keyword_match}
+        """
         system: str = """
             You are an expert naval engineering AI agent. Given the context, answer the following user query.
             Do not mention anything from the context which isn't relevant, and keep the answers detailed and precise.
             
-            context: {c}
+            context: {c}\n
             query: {q}
         """
         
@@ -177,5 +231,3 @@ class RetrievalEngine:
         )
         
         return response.output_text
-        
-        

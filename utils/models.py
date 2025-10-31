@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import List, Literal, Set
 from pydantic import BaseModel
 
 class InitEngine (BaseModel):
@@ -31,3 +31,10 @@ class EmbeddingArgs (BaseModel):
         1536
     ]
     encoding_format: Literal["float", "base64"]
+
+class ProcessedQuery (BaseModel):
+    raw: List[str]
+    autocorrected: str
+    expanded_terms: Set[str]
+    primary_keywords: List[str]
+    
