@@ -12,7 +12,7 @@ As for a key value store, there no contention when it comes to light weight and 
 
 ## Usage
 
-For now, I have mostly focused on PDFs. One running assumption I have is that as the models grow better and more powerful, hence complicated heuristics for sorting out PDFs _may_ not be necessary (or, just feed the page to an LLM or image embeddings). Here's how to initiliase the engine:
+For now, I have mostly focused on PDFs. One running assumption I have is that as the models grow better and more powerful, complicated heuristics for sorting out PDFs _may_ not be necessary (or, just feed the page to an LLM or image embeddings). Here's how to initiliase the engine:
 
 ```python
 rengine = RetrievalEngine(
