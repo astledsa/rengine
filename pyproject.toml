@@ -16,5 +16,4 @@ dependencies = [
     "pytesseract>=0.3.13",
     "setuptools>=80.9.0",
     "tantivy>=0.25.0",
-    "xapian-bindings>=0.1.0",
 ]

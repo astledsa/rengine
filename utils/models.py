@@ -6,6 +6,9 @@ class InitEngine (BaseModel):
     kv_store_init: bool
     vector_index_init: bool
     text_search_index_init: bool
+    vector_index_path: str
+    text_index_path: str
+    kv_store_path: str
 
 class singlePDFArgs (BaseModel):
     pdf_path: str

@@ -23,16 +23,6 @@ from symspellpy import SymSpell, Verbosity
 
 _WORD = re.compile(r"\w+", re.UNICODE)
 
-def _q(ix: Index, qstr: str) -> Query:
-    # Let Tantivy analyze the string with the field's analyzer
-    return ix.parse_query(qstr, ["content"])
-
-def _sanitize_tokens(xs):
-    out = []
-    for x in xs or []:
-        out.extend(_WORD.findall(str(x).lower()))
-    return [t for t in out if t]
-
 lemmatizer = WordNetLemmatizer()
 
 sym_spell = SymSpell(max_dictionary_edit_distance=2, prefix_length=7)

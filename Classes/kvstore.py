@@ -3,7 +3,7 @@ from typing import Optional
 
 class KV :
     
-    def __init__(self, path: str = './storage/kv/db.sqlite3') -> None:
+    def __init__(self, path: str) -> None:
         self.conn = sqlite3.connect(path)
         
     def create_table (self) -> None:

@@ -21,6 +21,12 @@ except Exception:
 
 load_dotenv()
 
+_defaultembedargs = EmbeddingArgs(
+    embed_model="text-embedding-3-small",
+    dimensions=768,
+    encoding_format="float"
+)
+
 def is_valid_paragraph(text: str, min_words: int = 40, min_chars: int = 200) -> bool:
     if not text:
         return False
@@ -37,16 +43,16 @@ class RetrievalEngine:
         self, 
         initargs: InitEngine, 
     ):
-        self.kv = KV ()
+        self.kv = KV (path=initargs.kv_store_path)
         self.openai = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
         
         if initargs.text_search_index_init:
             schema_builder = tantivy.SchemaBuilder()
             schema_builder.add_text_field("content", stored=True, tokenizer_name="en_stem")
             schema = schema_builder.build()
-            self.tanv = tantivy.Index(schema, path="./storage/index/text")
+            self.tanv = tantivy.Index(schema, path=initargs.text_index_path)
         else:
-            self.tanv = tantivy.Index.open(path="./storage/index/text")
+            self.tanv = tantivy.Index.open(path=initargs.text_index_path)
             
         if initargs.ingest_pdf :
             self.lang: str = "eng"
@@ -55,13 +61,13 @@ class RetrievalEngine:
         
         if initargs.vector_index_init:
             self.corenn = CoreNN.create(
-                "./storage/index/vector", 
+                initargs.vector_index_path, 
                 {
                     "dim": 768
                 }
             )
         else :
-            self.corenn = CoreNN.open("./storage/index/vector")
+            self.corenn = CoreNN.open(initargs.vector_index_path)
         
         if initargs.kv_store_init:
             self.kv.create_table()
@@ -122,7 +128,12 @@ class RetrievalEngine:
             k += 1
         return paths
 
-    def ingest(self, pargs: singlePDFArgs, embed: bool = False, eargs: Optional[EmbeddingArgs] = None) -> None:
+    def ingest(
+        self, 
+        pargs: singlePDFArgs, 
+        embed: bool = False, 
+        eargs: EmbeddingArgs = _defaultembedargs
+    ) -> None:
         
         keys, texts = [], []
         writer = self.tanv.writer()
