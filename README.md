@@ -16,20 +16,15 @@ For now, I have mostly focused on PDFs. One running assumption I have is that as
 
 ```python
 rengine = RetrievalEngine(
-            initargs=InitEngine(
-                ingest_pdf=False,
-                kv_store_init=False,
-                vector_index_init=False,
-                text_search_index_init=False
-            ),
-            pdfargs=PDFExtractArgs(
-                pdf_path="./storage/data/sample.pdf",
-                scanned=True
-            ),
-            vargs=VectorIndexArgs(
-                path_to_index="./storage/index/vector",
-                dimensions=768
-            )
+        initargs=InitEngine(
+            ingest_pdf=True,
+            kv_store_init=False,
+            vector_index_init=False,
+            text_search_index_init=False,
+            kv_store_path='./storage/kv/db.sqlite3',
+            vector_index_path="./storage/index/vector",
+            text_index_path="./storage/index/text"
+        ),
     )
 ```
 
