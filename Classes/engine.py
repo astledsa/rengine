@@ -36,8 +36,6 @@ class RetrievalEngine:
     def __init__(
         self, 
         initargs: InitEngine, 
-        pdfargs: Optional[PDFExtractArgs] = None, 
-        vargs: Optional[VectorIndexArgs] = None,
     ):
         self.kv = KV ()
         self.openai = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
@@ -50,22 +48,20 @@ class RetrievalEngine:
         else:
             self.tanv = tantivy.Index.open(path="./storage/index/text")
             
-        if initargs.ingest_pdf and pdfargs:
-            self.pdf_path: str = pdfargs.pdf_path or "./storage/data/sample.pdf"
-            self.scanned: bool = pdfargs.scanned or False
-            self.lang: str = pdfargs.lang or "eng"
-            self.dpi: int = pdfargs.dpi or 200
-            self.min_blob_area: int = pdfargs.min_blob_area or 5000
+        if initargs.ingest_pdf :
+            self.lang: str = "eng"
+            self.dpi: int = 200
+            self.min_blob_area: int = 5000
         
-        if initargs.vector_index_init and vargs:
+        if initargs.vector_index_init:
             self.corenn = CoreNN.create(
-                vargs.path_to_index, 
+                "./storage/index/vector", 
                 {
-                    "dim": vargs.dimensions
+                    "dim": 768
                 }
             )
-        elif vargs:
-            self.corenn = CoreNN.open(vargs.path_to_index)
+        else :
+            self.corenn = CoreNN.open("./storage/index/vector")
         
         if initargs.kv_store_init:
             self.kv.create_table()
@@ -126,33 +122,52 @@ class RetrievalEngine:
             k += 1
         return paths
 
-    def ingest(self, embed: bool = False, eargs: Optional[EmbeddingArgs] = None) -> None:
+    def ingest(self, pargs: singlePDFArgs, embed: bool = False, eargs: Optional[EmbeddingArgs] = None) -> None:
         
         keys, texts = [], []
         writer = self.tanv.writer()
 
-        with fitz.open(self.pdf_path) as doc:
+        with fitz.open(pargs.pdf_path) as doc:
             for i in range(doc.page_count):
-                page = doc.load_page(i)
-                if self.scanned:
-                    img = self._render_page(page)
-                    data = self._ocr_image(img)
-                    text = self._data_to_text(data)
-                    # images = self._segment_non_text(img, data)
-                else:
-                    text = page.get_text("text")
-                    # images = self._extract_embedded_images(doc, page)
-                
-                page_key = f"{self.pdf_path.strip('.')}_page_{i+1:04d}"
-                
-                if is_valid_paragraph(text):
-                    writer.add_document(tantivy.Document(content=text.strip()))
-                
-                # self.kv.set(page_key, text.strip())
-                
-                if embed:
-                    keys.append(page_key)
-                    texts.append(text.strip())
+                print(f"{i}...")
+                try:
+                    try:
+                        page = doc.load_page(i)
+                    except Exception as e:
+                        print(f"Failed to load page {i+1}: {e}")
+                        continue
+                    
+                    if pargs.scanned:
+                        img = self._render_page(page)
+                        data = self._ocr_image(img)
+                        text = self._data_to_text(data)
+                        # images = self._segment_non_text(img, data)
+                    else:
+                        try:
+                            text = page.get_text("text") or ""
+                            # images = self._extract_embedded_images(doc, page)
+                        except Exception:
+                            text = ""
+                        
+                        if not text.strip():
+                            img = self._render_page(page)
+                            data = self._ocr_image(img)
+                            text = self._data_to_text(data)
+
+                    page_key = f"{pargs.pdf_path.rstrip('.pdf')}_page_{i+1:04d}"
+                    
+                    clean_text = text.strip()
+                    if clean_text and is_valid_paragraph(clean_text):
+                        writer.add_document(tantivy.Document(content=clean_text))
+
+                    self.kv.set(page_key, clean_text)
+
+                    if embed and clean_text:
+                        keys.append(page_key)
+                        texts.append(clean_text)
+
+                except Exception as e:
+                    print(f"Error on page {i+1}:", e)
         
         writer.commit()
         writer.wait_merging_threads()
@@ -167,19 +182,25 @@ class RetrievalEngine:
             vectors = np.array([d.embedding for d in response.data], dtype=np.float32)
             self.corenn.insert_f32(keys, vectors)
         
-        print(f"Indexed and stored {len(texts)} arrays")
+    def ingest_bulk (self, data: List[singlePDFArgs]) -> None:
+        
+        for arg in data:
+            self.ingest(pargs=arg, embed=True, eargs=EmbeddingArgs(
+                embed_model="text-embedding-3-small",
+                dimensions=768,
+                encoding_format="float"
+            ))
     
     def FullTextRetrieve (self, query: str) -> List[Tuple[str, float]]:
         
         searcher = self.tanv.searcher()
-        
-        query = build_query(self.tanv, structure_query(query))
-        best_hits = searcher.search(query, 25).hits
+        squery: tantivy.Query = build_query(self.tanv, structure_query(query))
+        best_hits = searcher.search(squery, 25).hits
         
         results: List[Tuple[str, float]] = []
         for (score, best_doc_address) in best_hits:
             best_doc = searcher.doc(best_doc_address)
-            results.append((best_doc["content"], score))
+            results.append((best_doc["content"][0], score))
         
         return results
     
@@ -203,17 +224,18 @@ class RetrievalEngine:
     def chat (self, query: str) -> str:
         
         results_keyword: Set[str] = set([t[0] for t in self.FullTextRetrieve(query)])
-        results_semantic: Set[str] = set([t[0] for t in self.SemanticRetrieve(query)])
+        results_semantic: Set[str] = set([self.kv.get(t[0]) for t in self.SemanticRetrieve(query)])
         
         common = results_keyword & results_semantic
         keyword_match = results_keyword - results_semantic
-        semantic_match = results_semantic = results_keyword
+        semantic_match = results_semantic - results_keyword
         
         context: str = f"""
             common: {common}\n
             semantic match: {semantic_match}\n
             keyword match: {keyword_match}
         """
+        
         system: str = """
             You are an expert naval engineering AI agent. Given the context, answer the following user query.
             Do not mention anything from the context which isn't relevant, and keep the answers detailed and precise.

@@ -7,17 +7,9 @@ class InitEngine (BaseModel):
     vector_index_init: bool
     text_search_index_init: bool
 
-class PDFExtractArgs (BaseModel):
-    pdf_path: str = ""
-    scanned: bool = False
-    out_dir: str = "output"
-    lang: str = "eng"
-    dpi: int = 200
-    min_blob_area: int = 5000
-
-class VectorIndexArgs (BaseModel):
-    path_to_index: str = "./storage/index/vector"
-    dimensions: int = 768
+class singlePDFArgs (BaseModel):
+    pdf_path: str
+    scanned: bool
 
 class EmbeddingArgs (BaseModel):
     embed_model: Literal[

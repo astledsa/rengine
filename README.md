@@ -49,6 +49,18 @@ rengine.ingest(
         )
 ```
 
+**Ingestion in bulk** for PDFs
+
+```python
+ pdfs: List[singlePDFArgs] = [
+    singlePDFArgs(pdf_path="./storage/data/sample_1.pdf", scanned=True),
+    singlePDFArgs(pdf_path="./storage/data/sample_2.pdf", scanned=False),
+    singlePDFArgs(pdf_path="./storage/data/sample_3.pdf", scanned=True),
+]
+
+rengine.ingest_bulk (pdfs)
+```
+
 **Chat**
 
 ```python

@@ -79,6 +79,6 @@ def structure_query (natural_language_query: str) -> ProcessedQuery:
 
 def build_query(ix: Index, q: ProcessedQuery) -> Query:
 
-    qstr = " AND ".join(q.primary_keywords)
+    qstr = " OR ".join(q.primary_keywords)
     return ix.parse_query(query=qstr, default_field_names=["content"])
     
