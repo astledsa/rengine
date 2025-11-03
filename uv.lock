@@ -59,6 +59,17 @@ wheels = [
 ]
 
 [[package]]
+name = "corenn-py"
+version = "0.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f9/33/5b3069661e7c948f43e2fd0a270b18d62e081663843a086e3325c3a9ff27/corenn_py-0.3.1.tar.gz", hash = "sha256:6d4f357592af5005c56524f7deeca5a8413f7055660ca6d86b55d30b93381f99", size = 47585 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/69/b7c83815fb59c3aedf9f4b225116ba399419f0fe80f7e5a9c7f5b082872e/corenn_py-0.3.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:3f646bb13862f35761ef69ff44d2487e6b216ca3fc6859219df237ddfdd69fe8", size = 2765140 },
+    { url = "https://files.pythonhosted.org/packages/75/bb/0233a249ef549fc48635700d4bb3c8960a90276e820a7e15c2dcc5446ac3/corenn_py-0.3.1-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:80de553a0603e8e7bf0ef21d9ede10618dfa615fda3dd907745ca3be7f6381e0", size = 3877861 },
+    { url = "https://files.pythonhosted.org/packages/86/e0/5ed7673bfe205c05b68b1f2480f867fd1c793735bc9c04024479996c937b/corenn_py-0.3.1-cp313-cp313-win_amd64.whl", hash = "sha256:8140dcfe3fda9ccf28251ce19a42a592103069f1b1dcc76538710e9035dd6b0e", size = 2754633 },
+]
+
+[[package]]
 name = "distro"
 version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -76,6 +87,19 @@ dependencies = [
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b2/b7/545d2c10c1fc15e48653c91efde329a790f2eecfbbf2bd16003b5db2bab0/dotenv-0.9.9-py2.py3-none-any.whl", hash = "sha256:29cf74a087b31dafdb5a446b6d7e11cbce8ed2741540e2339c69fbef92c94ce9", size = 1892 },
+]
+
+[[package]]
+name = "editdistpy"
+version = "0.1.6"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/e3/be4d6836250feb6347799f4aa683927b7aa5db8e849906c6e54e10db2152/editdistpy-0.1.6.tar.gz", hash = "sha256:33cef3a82c6eb007edc02af65d8c99d67b75ce8e9c980105da4bd8256bcb4b25", size = 117947 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/81/f6/8f204358a583698347e575f34797061a0d6827f3b870904a6ef4d9463bf2/editdistpy-0.1.6-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:28baa481c7e283bb485d717ab2983d1e02820cb7809bd809c22d2c900dfa8a35", size = 158903 },
+    { url = "https://files.pythonhosted.org/packages/ae/97/86647e1d6a02923dfb9f933f7ffaf0eeff5a764fcf795ec0068ef8cc8993/editdistpy-0.1.6-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:9f15444910036df38d654a36509c767b31ffb80bf7100709c456c62dc5fda853", size = 158731 },
+    { url = "https://files.pythonhosted.org/packages/f5/e0/2253b73b598b338cc71b3f3d97b1156cc5d11c43216c1834ce33bec93a3f/editdistpy-0.1.6-cp313-cp313-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fd8395ae5c9ddb5d31ce4f9be4cf80d662a73dcbd79fe5e1b1d0bdb6cba363ea", size = 158782 },
+    { url = "https://files.pythonhosted.org/packages/db/f6/a4ab9df1c044fb1f04019a031b642c40bc6c4f4ebdf8853e95ef8cad52b0/editdistpy-0.1.6-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:e3b2865c571a069429a6374189d570c26c2ccb3a73fe5871f36d8a28882669fc", size = 1149388 },
+    { url = "https://files.pythonhosted.org/packages/c7/fc/27b9d5175a46f7ebabeccd6536cef126adbd4628338bac00d62985fc217f/editdistpy-0.1.6-cp313-cp313-win_amd64.whl", hash = "sha256:cdbca54505e29b32b25b8956ac6bef739cdca32351e9548db38f2413ccf802c1", size = 160607 },
 ]
 
 [[package]]
@@ -197,6 +221,7 @@ name = "navy"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "corenn-py", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
     { name = "dotenv", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
     { name = "nltk", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
     { name = "numpy", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
@@ -206,12 +231,16 @@ dependencies = [
     { name = "pydantic", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
     { name = "pymupdf", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
     { name = "pytesseract", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
+    { name = "semantic-text-splitter", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
     { name = "setuptools", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
+    { name = "symspellpy", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
     { name = "tantivy", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
+    { name = "textsplit", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "corenn-py", specifier = ">=0.3.1" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "nltk", specifier = ">=3.9.2" },
     { name = "numpy", specifier = ">=2.3.3" },
@@ -221,8 +250,11 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.12.3" },
     { name = "pymupdf", specifier = ">=1.26.5" },
     { name = "pytesseract", specifier = ">=0.3.13" },
+    { name = "semantic-text-splitter", specifier = ">=0.28.0" },
     { name = "setuptools", specifier = ">=80.9.0" },
+    { name = "symspellpy", specifier = ">=6.9.0" },
     { name = "tantivy", specifier = ">=0.25.0" },
+    { name = "textsplit", specifier = ">=0.5" },
 ]
 
 [[package]]
@@ -238,6 +270,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f9/76/3a5e4312c19a028770f86fd7c058cf9f4ec4321c6cf7526bab998a5b683c/nltk-3.9.2.tar.gz", hash = "sha256:0f409e9b069ca4177c1903c3e843eef90c7e92992fa4931ae607da6de49e1419", size = 2887629 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/60/90/81ac364ef94209c100e12579629dc92bf7a709a84af32f8c551b02c07e94/nltk-3.9.2-py3-none-any.whl", hash = "sha256:1e209d2b3009110635ed9709a67a1a3e33a10f799490fa71cf4bec218c11c88a", size = 1513404 },
+]
+
+[[package]]
+name = "nose"
+version = "1.3.7"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/a5/0dc93c3ec33f4e281849523a5a913fa1eea9a3068acfa754d44d88107a44/nose-1.3.7.tar.gz", hash = "sha256:f1bffef9cbc82628f6e7d7b40d7e255aefaa1adb6a1b1d26c69a8b79e6208a98", size = 280488 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/15/d8/dd071918c040f50fa1cf80da16423af51ff8ce4a0f2399b7bf8de45ac3d9/nose-1.3.7-py3-none-any.whl", hash = "sha256:9ff7c6cc443f8c51994b34a667bbcf45afd6d945be7477b52e97516fd17c53ac", size = 154731 },
 ]
 
 [[package]]
@@ -566,6 +607,23 @@ wheels = [
 ]
 
 [[package]]
+name = "semantic-text-splitter"
+version = "0.28.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/62/8d/fd4d5327e1302b75c135f2894a1fab67b0fb1717750de2831176a6ac31b2/semantic_text_splitter-0.28.0.tar.gz", hash = "sha256:2cdd968fe1411abedc23aa283858def9178288b1e8ab2357bb91cccf2e8cf920", size = 278469 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e3/c5/96022aa764d55aa4a1b98e27eea8ab295b1adba363de51d859f18470a38b/semantic_text_splitter-0.28.0-cp310-abi3-macosx_10_12_x86_64.whl", hash = "sha256:625ed49fae4be45ef624da1b57326356c33d26dc275b4115c20afe8d1e7abab1", size = 8102630 },
+    { url = "https://files.pythonhosted.org/packages/a1/1d/689970427b98e5d2f9eece0f46a4a995baae19adfb2b13667cb2920ca75f/semantic_text_splitter-0.28.0-cp310-abi3-macosx_11_0_arm64.whl", hash = "sha256:d185880c21ae2028261efe0271d7d6e2a90bf933179e850857b99648dc637496", size = 8078832 },
+    { url = "https://files.pythonhosted.org/packages/2f/f4/ff14e8af0298c09696b25555a5e4d071845e0f583613e1741576f862d228/semantic_text_splitter-0.28.0-cp310-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:f92c11610c7b2999033f8b5bc139133008d9a2b6a71daea312c7d22ce3199fe0", size = 8300866 },
+    { url = "https://files.pythonhosted.org/packages/ea/bc/9e18ac60bd97c0fa5a0d46a0220b801ecc9051cd391db7868eeb4f14d437/semantic_text_splitter-0.28.0-cp310-abi3-manylinux_2_28_armv7l.whl", hash = "sha256:f44b77e5f06059b5d30035ce29880da40d61a0519b6b3292a88ac59135c54079", size = 8184297 },
+    { url = "https://files.pythonhosted.org/packages/98/16/6a22944fa45060c4f314514d124059d18f2426351771766e9a5efa69d4bb/semantic_text_splitter-0.28.0-cp310-abi3-manylinux_2_28_ppc64le.whl", hash = "sha256:de4742f5d04f92fbca553aefae5febb772793c939044ea40028b00ca8e4c47b9", size = 8661097 },
+    { url = "https://files.pythonhosted.org/packages/95/81/ee204725c2e78960673f82638d902a20d017fb69827cf9dd5ad817936380/semantic_text_splitter-0.28.0-cp310-abi3-manylinux_2_28_s390x.whl", hash = "sha256:76db639fda2c8d56347e38b9ee2d355887406f6bc410d02f646dad27557760ef", size = 8545296 },
+    { url = "https://files.pythonhosted.org/packages/b4/db/57fbca52c520aa686571a55ffbe2c0c671c32d9f92da05a752246125d6b8/semantic_text_splitter-0.28.0-cp310-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:dbe46461c9ea58fcad04fffdab20af9653929134ef700113522865fbbd0b8af9", size = 8398670 },
+    { url = "https://files.pythonhosted.org/packages/b9/e6/964b5676b5ecfd3d15a95c4fa1f86e1a027aa6983a88505bc6ee0a6525a6/semantic_text_splitter-0.28.0-cp310-abi3-win32.whl", hash = "sha256:f26b5cfda7fcff81a829ce9bb10858838872602a7bffe2e7ca1e97d5d18143b0", size = 7640345 },
+    { url = "https://files.pythonhosted.org/packages/d2/e7/8da224e25745b5ee1bfeaa06e818b39792f68fbfac445509cecae9206f2f/semantic_text_splitter-0.28.0-cp310-abi3-win_amd64.whl", hash = "sha256:a793d98114c088ca11eeefbfe392946adfe4d1eb421b12ce213cb818348d3614", size = 7814130 },
+]
+
+[[package]]
 name = "setuptools"
 version = "80.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -584,6 +642,18 @@ wheels = [
 ]
 
 [[package]]
+name = "symspellpy"
+version = "6.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "editdistpy", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ce/42/f445e683376bb5eee35db34e062372e0c4cfa6671632cb0b0dafa747e32e/symspellpy-6.9.0.tar.gz", hash = "sha256:5ce8cb8a13e531db03f664407abc9e42e272f16bab7c0639500a8bdd07eee482", size = 2615560 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/54/07/c903a3a42222a4bb6aedf620a63554f577f3020b4f56f339889718126c1c/symspellpy-6.9.0-py3-none-any.whl", hash = "sha256:b6dba96275fdbedc240491854160bbe596dda930f2d58567ad55faf82a4e4b43", size = 2612234 },
+]
+
+[[package]]
 name = "tantivy"
 version = "0.25.0"
 source = { registry = "https://pypi.org/simple" }
@@ -594,6 +664,19 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/4e/b9/3b2078148b884f7f689553754838f463dfa5444ebba0ad19b7f0086e8197/tantivy-0.25.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7f73e4433599fdbf7e9524d81d520717505762a7688077ccb79402caf50a0a84", size = 4040914 },
     { url = "https://files.pythonhosted.org/packages/71/dc/3cbcbac7ae11f1b9eb953bdbbda6238ccd1d8e29e68c926a5a132fe8b813/tantivy-0.25.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3815dcf503df089f2bc31d26f8e9e0aed8e7fa04b0079f977e53b227c1e297dc", size = 4146931 },
     { url = "https://files.pythonhosted.org/packages/12/72/50edc038cae69c759df82b0d2a86bec3b7356635a5270e1443a77f96545e/tantivy-0.25.0-cp313-none-win_amd64.whl", hash = "sha256:0e78872dd3aa357ce02a63feff1bfe9809092f7131bf3fe758c8fc74dce6f727", size = 3235103 },
+]
+
+[[package]]
+name = "textsplit"
+version = "0.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "nose", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
+    { name = "numpy", marker = "(platform_machine != 'aarch64' and python_full_version >= '3.13') or (platform_system != 'Linux' and python_full_version >= '3.13') or platform_system == 'Darwin' or (platform_machine == 'aarch64' and platform_system == 'Linux')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b2/f2/312d57cbca4299353b816b055a8c6b42576a60e79881b6374fe9b9cefda7/textsplit-0.5.tar.gz", hash = "sha256:12b32a4a63c00b5173d10450e6a65be5f5825ff53e5724cd2e96df1dd0d28243", size = 8648 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f8/f8/46e5dfcaac6974d6b13f91d91f9194ffa4eea08129684afb25fac18974af/textsplit-0.5-py3-none-any.whl", hash = "sha256:83303a1a9b655343c8b97b0bb10be6d9af8ca467b3285c9fca7fe93ce1b67872", size = 9626 },
 ]
 
 [[package]]

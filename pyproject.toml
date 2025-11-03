@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "corenn-py>=0.3.1",
     "dotenv>=0.9.9",
     "nltk>=3.9.2",
     "numpy>=2.3.3",
@@ -14,6 +15,9 @@ dependencies = [
     "pydantic>=2.12.3",
     "pymupdf>=1.26.5",
     "pytesseract>=0.3.13",
+    "semantic-text-splitter>=0.28.0",
     "setuptools>=80.9.0",
+    "symspellpy>=6.9.0",
     "tantivy>=0.25.0",
+    "textsplit>=0.5",
 ]
