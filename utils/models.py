@@ -1,4 +1,4 @@
-from typing import List, Literal, Set
+from typing import Callable, List, Literal, Set
 from pydantic import BaseModel
 
 class InitEngine (BaseModel):
@@ -32,4 +32,4 @@ class ProcessedQuery (BaseModel):
     autocorrected: str
     expanded_terms: Set[str]
     primary_keywords: List[str]
-    
+

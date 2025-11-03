@@ -1,5 +1,6 @@
 import io
 import os
+import time
 import fitz
 import tantivy
 import pytesseract
@@ -242,7 +243,7 @@ class RetrievalEngine:
         
         searcher = self.tanv.searcher()
         squery: tantivy.Query = build_query(self.tanv, structure_query(query))
-        best_hits = searcher.search(squery, 25).hits
+        best_hits = searcher.search(squery, 10).hits
         
         results: List[Tuple[str, float]] = []
         for (score, best_doc_address) in best_hits:
@@ -265,7 +266,7 @@ class RetrievalEngine:
                 [d.embedding for d in res.data],
                 dtype=np.float32
             ),
-            25
+            10
         )[0]
     
     def chat (self, query: str, stream: bool = False) -> str:
@@ -284,16 +285,18 @@ class RetrievalEngine:
         """
         
         system: str = """
-            You are an expert naval engineering AI agent. Use only the information explicitly provided 
-            in the context to answer the following user query.
+            You are an expert naval engineering AI agent. Use only the textual information in the context. 
             Your response must be detailed, technically accurate, and fully grounded in the context.
-            Do not include any information, examples, or explanations that are not directly supported by 
-            the given context.
-            If the context does not contain sufficient information to answer fully, acknowledge the gap 
-            clearly instead of speculating. DO NOT MENTION the context, simply answer.
             
             context: {c}\n
             query: {q}
+            
+            INSTRUCTIONS:
+                - Give as detailed an answer as possible, grounded in the context.
+                - DO NOT MENTION the context, simply answer.
+                - Avoid mentioning figures, diagrams, contents, etc ...
+                - Do not include any information, examples, or explanations that are not directly supported by 
+                the given context.
         """
         
         if not stream:
@@ -321,3 +324,18 @@ class RetrievalEngine:
                     elif event.type == "response.completed":
                         print("\n---\n[Done]")
                 return "".join(output)
+    
+    def start_repl (self):
+        print("Naval AI REPL (type 'exit' to quit')")
+        while True:
+            query = input("\n> ").strip()
+            if query.lower() in {"exit", "quit"}:
+                break
+        
+            response = self.chat(query)
+            print()
+            for ch in response:
+                print(ch, end='', flush=True)
+                time.sleep(0.04)
+            print("\n")
+    
