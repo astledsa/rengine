@@ -65,3 +65,9 @@ rengine.chat(
     query="A specific query, related to the docs"
 )
 ```
+
+**REPL**
+
+```python
+rengine.start_repl()
+```
