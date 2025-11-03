@@ -28,6 +28,8 @@ rengine = RetrievalEngine(
     )
 ```
 
+_NOTE: The text index path **must** exist, but the vector index path **must not**, for example, only the ./storage/index folder is needed, since coreNN on initialization creates the folder. While in case of tanvity, it does, hence ./storage/index/text must exist beforehand._
+
 One only has to initiliase the full-text, vector engines and the KV store once, at the start. Though the paths must always be provided for every subsequent uses.
 Mentioning the paths to store vector and full-text search indexes may get complicated with sharding, where in the future, I might have to make a router of sorts. The sharding itself depends on the use-case.
 
